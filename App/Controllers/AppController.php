@@ -11,12 +11,19 @@ class AppController extends Action{
 			$this->validaAutenticacao();		
 			//Recuperar todos os tweets
 			$tweet = Container::getModel("Tweet");
-			//Tratativa para mostrar o tweet soemnte do usuario logado
 			$tweet->__set('id_usuario', $_SESSION['id']);
 
 			$tweets = $tweet->getAll();
 
     		$this->view->tweets = $tweets;
+
+    		// Preenchemento do perfiel de usuário dinâmico
+    		$usuario = Container::getModel('Usuario');
+    		$usuario->__set('id', $_SESSION['id']);
+    		$this->view->getNome = $usuario->getNome();
+    		$this->view->totalTweets = $usuario->totalTweets();
+    		$this->view->totalseguidores = $usuario->totalSeguidores();
+    		$this->view->totalSeguindo = $usuario->totalSeguindo();
 
 			$this->render("timeline");
 
@@ -33,6 +40,16 @@ class AppController extends Action{
 
 			header("Location: /timeline");
 		
+	}
+
+	public function deleteTweet(){
+
+		$this->validaAutenticacao();
+		$_GET['id_tweet'] = isset($_GET['id_tweet']) ? htmlspecialchars($_GET['id_tweet']) : '';
+		$tweet = Container::getModel('Tweet');
+		$tweet->__set('id', $_GET['id_tweet']);
+		$tweet->excluirTweet();
+		header('Location: /timeline');
 	}
 
 	public function validaAutenticacao(){
@@ -64,6 +81,15 @@ class AppController extends Action{
 		}
 		
 		$this->view->usuarios;
+
+		// Preenchemento do perfiel de usuário dinâmico
+    		$usuario = Container::getModel('Usuario');
+    		$usuario->__set('id', $_SESSION['id']);
+    		
+    		$this->view->getNome = $usuario->getNome();
+    		$this->view->totalTweets = $usuario->totalTweets();
+    		$this->view->totalSeguindo = $usuario->totalSeguindo();
+    		$this->view->totalseguidores = $usuario->totalSeguidores();
 
 		$this->render('quemSeguir');
 	}

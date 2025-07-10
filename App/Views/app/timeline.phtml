@@ -27,25 +27,27 @@
 					
 					<div class="row mt-2 mb-2">
 						<div class="col mb-2">
-							<span class="perfilPainelNome">Nome do Usuário</span>
+							<span class="perfilPainelNome"><?= $this->view->getNome['nome']?></span>
 						</div>
 					</div>
 
 					<div class="row mb-2">
-
+						
 						<div class="col">
 							<span class="perfilPainelItem">Tweets</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->view->totalTweets['totalTweets'] ?></span>
 						</div>
-
+								
 						<div class="col">
+							
 							<span class="perfilPainelItem">Seguindo</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->view->totalSeguindo['totalSeguindo'] ?></span>
 						</div>
 
 						<div class="col">
+							
 							<span class="perfilPainelItem">Seguidores</span><br />
-							<span class="perfilPainelItemValor">0</span>
+							<span class="perfilPainelItemValor"><?= $this->view->totalseguidores['totalSeguidores']?> </span>
 						</div>
 
 					</div>
@@ -70,18 +72,20 @@
 			</div>
 
 			<?php foreach ($this->view->tweets as $key => $value):?>
-
 				<div class="row tweet">
+
 					<div class="col">
 						<p><strong><?=$value['nome']?></strong> <span class="text text-muted"><?=date('d/m/Y H:m:s', strtotime($value['data']))?></span></p>
 						<p><?=$value['tweet']?></p>
 
 						<br />
-						<form>
+					<?php if ($value['id_usuario'] == $_SESSION['id']) :?>
+						<div>
 							<div class="col d-flex justify-content-end">
-								<button type="submit" class="btn btn-danger"><small>Remover</small></button>
+								<a href="/deleteTweet?id_tweet=<?=$value['id']?>" class="btn btn-danger fs-5">Remover</a>
 							</div>
-						</form>		
+						</div>		
+					<?php endif;?>
 					</div>
 				</div>
 			<?php endforeach; ?>

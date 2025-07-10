@@ -26,14 +26,22 @@ class Tweet extends Model{
 		return $this;		
 	}
 
+	//Excluir tweet
+	public function excluirTweet(){
+		$query = 'delete from tweets where id = :id';
+		$stmt = $this->db->prepare($query);
+		$stmt->bindValue(':id', $this->__get('id'));
+		$stmt->execute();
+	}
+
 	//recuperar
 	public function getAll(){
 		$query = 'select
-				t.id, u.nome, t.tweet, t.data
+				t.id, t.id_usuario, u.nome, t.tweet, t.data
 		from 
 				tweets as t left join usuarios as u on(t.id_usuario = u.id)
 		where
-				id_usuario = :id_usuario
+				t.id_usuario = :id_usuario or t.id_usuario in (select us.id_usuario_seguindo from usuarios_seguidores as us where us.id_usuario = :id_usuario)
 		order by
 				t.data desc';
 

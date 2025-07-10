@@ -102,7 +102,7 @@ class Usuario extends Model{
 						
 					from usuarios as u
 					where u.id != :id_usuario';
-			print_r($stmt = $this->db->prepare($query));
+			$stmt = $this->db->prepare($query);
 			$stmt->bindValue(':id_usuario', $this->__get('id'));
 			$stmt->execute();
 			return $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -127,6 +127,41 @@ class Usuario extends Model{
 		$stmt->execute();
 		return true;
 	}
+
+	// Todos os métodos abaixo são para preencher o perfil dinâmicamente
+
+	public function getNome(){
+		$query = 'select nome from usuarios where id = :id_usuario';
+		$stmt = $this->db->prepare($query);
+		$stmt->bindValue(':id_usuario', $this->__get('id'));
+		$stmt->execute();
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
+	}
+
+	public function totalTweets(){
+		$query = 'select count(*) as totalTweets from tweets where id_usuario = :id_usuario';
+		$stmt = $this->db->prepare($query);
+		$stmt->bindValue(':id_usuario', $this->__get('id'));
+		$stmt->execute();
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
+	}
+
+	public function totalSeguindo(){
+		$query = 'select count(*) as totalSeguindo from usuarios_seguidores  where id_usuario = :id_usuario';
+		$stmt = $this->db->prepare($query);
+		$stmt->bindValue(':id_usuario', $this->__get('id'));
+		$stmt->execute();
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
+	}
+
+	public function totalSeguidores(){
+		$query = 'select count(*) as totalSeguidores from usuarios_seguidores where id_usuario_seguindo = :id_usuario';
+		$stmt = $this->db->prepare($query);
+		$stmt->bindValue(':id_usuario', $this->__get('id'));
+		$stmt->execute();
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
+	}
+
 
 
 }
